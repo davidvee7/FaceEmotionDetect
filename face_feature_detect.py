@@ -7,7 +7,7 @@ import numpy
 # Get user supplied values
 
 def normalMouth():
-    imagePath = "./testimages/anthonynormal.jpg" #sys.argv[1]
+    imagePath = "./testimages/mouthCloseUp.jpg" #sys.argv[1]
 
     cascPath = "./cascade-files/haarcascade_mcs_mouth.xml"
 
@@ -23,7 +23,7 @@ def normalMouth():
     # Detect faces in the image
     faces = faceCascade.detectMultiScale(
         gray,
-        scaleFactor=2.9,
+        scaleFactor=1.6,
         minNeighbors=5,
         minSize=(30, 30),
         flags = cv2.cv.CV_HAAR_SCALE_IMAGE
@@ -34,7 +34,7 @@ def normalMouth():
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        # break
+        break
     crop_img = image[(y+2):(y-2+h-2),(x+2):(x-1+w-1)]
 
     imgYCC = cv2.cvtColor(crop_img, cv2.COLOR_BGR2YCR_CB)
@@ -58,10 +58,10 @@ def normalMouth():
         for y in range(shape[1]-2):
             # print canned[x,y]
             if canned[x,y] ==255:
-                if y< minNonPursed:
-                    minNonPursed = y
-                if y > maxNonPursed:
-                    maxNonPursed = y
+                if x< minNonPursed:
+                    minNonPursed = x
+                if x > maxNonPursed:
+                    maxNonPursed = x
 
     print "max and min non pursed"
     print minNonPursed  # 0
@@ -95,9 +95,9 @@ def pursedMouth():
     # Detect faces in the image
     faces = faceCascade.detectMultiScale(
         gray,
-        scaleFactor=1.5, #5.9 got the mouth
+        scaleFactor=2.9, #5.9 got the mouth
         minNeighbors=5,
-        minSize=(30, 30),
+        minSize=(20, 20),
         flags = cv2.cv.CV_HAAR_SCALE_IMAGE
     )
 
@@ -106,17 +106,17 @@ def pursedMouth():
     # Draw a rectangle around the faces
     count = 0
     for (x, y, w, h) in faces:
-        # count +=1
-        # if count !=1:
-        cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        break
+        count +=1
+        if count ==2:
+            cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            break
     crop_img = image[(y+2):(y-2+h-2),(x+2):(x-1+w-1)]
 
     imgYCC = cv2.cvtColor(crop_img, cv2.COLOR_BGR2YCR_CB)
 
 
     crop_img = cv2.GaussianBlur(crop_img,(5,5),0)
-    canned = cv2.Canny(crop_img,50,100)
+    canned = cv2.Canny(crop_img,50,100)  #65 110 FOR my pursed lips
 
     # print "post ycc"
     # print imgYCC
@@ -133,12 +133,12 @@ def pursedMouth():
         for b in range(shape[1]-2):
             # print canned[x,y]
             if canned[a,b] ==255:
-                if b< minPursed:
-                    minPursed = b
-                if b > maxPursed:
-                    maxPursed = b
+                if a< minPursed:
+                    minPursed = a
+                if a > maxPursed:
+                    maxPursed = a
 
-    print "max and min non pursed"
+    print "max and min pursed"
     print minPursed  # 0
     print maxPursed  # 120
             # if crop_img[x,y]
@@ -146,7 +146,7 @@ def pursedMouth():
 
     cv2.imshow("Faces found", canned)
 
-    cv2.imshow("faces found", crop_img)
+    cv2.imshow("faces found", image)
     cv2.waitKey(0)
 
 
@@ -170,9 +170,9 @@ def getSquint():
     # Detect faces in the image
     faces = faceCascade.detectMultiScale(
         gray,
-        scaleFactor=1.007,
+        scaleFactor=1.6,
         minNeighbors=5,
-        minSize=(10, 10),
+        minSize=(30, 30),
         flags = cv2.cv.CV_HAAR_SCALE_IMAGE
     )
 
@@ -205,14 +205,14 @@ def getSquint():
         for y in range(shape[1]-2):
             # print canned[x,y]
             if canned[x,y] ==255:
-                if y< minNonPursed:
-                    minNonPursed = y
-                if y > maxNonPursed:
-                    maxNonPursed = y
+                if x< minNonPursed:
+                    minNonPursed = x
+                if x > maxNonPursed:
+                    maxNonPursed = x
     #
-    # print "max and min non pursed"
-    # print minNonPursed  # 0
-    # print maxNonPursed  # 120
+    print "max and min  squint"
+    print minNonPursed  # 0
+    print maxNonPursed  # 120
     #         # if crop_img[x,y]
     differenceTopEye = maxNonPursed-minNonPursed
 
@@ -223,7 +223,7 @@ def getSquint():
     return differenceTopEye
 
 def eye():
-    imagePath = "./testimages/BarackObama.jpg" #sys.argv[1]
+    imagePath = "./testimages/mouthCloseUp.jpg" #sys.argv[1]
 
     cascPath = "./cascade-files/haarcascade_righteye_2splits.xml"
 
@@ -239,9 +239,9 @@ def eye():
     # Detect faces in the image
     faces = faceCascade.detectMultiScale(
         gray,
-        scaleFactor=1.007,
+        scaleFactor=1.1,
         minNeighbors=5,
-        minSize=(10, 10),
+        minSize=(30, 30),
         flags = cv2.cv.CV_HAAR_SCALE_IMAGE
     )
 
@@ -274,20 +274,20 @@ def eye():
         for y in range(shape[1]-2):
             # print canned[x,y]
             if canned[x,y] ==255:
-                if y< minNonPursed:
-                    minNonPursed = y
-                if y > maxNonPursed:
-                    maxNonPursed = y
+                if x< minNonPursed:
+                    minNonPursed = x
+                if x > maxNonPursed:
+                    maxNonPursed = x
     #
-    # print "max and min non pursed"
-    # print minNonPursed  # 0
-    # print maxNonPursed  # 120
-    #         # if crop_img[x,y]
+    print "max and min non squint"
+    print minNonPursed  # 0
+    print maxNonPursed  # 120
+    #         # if crop_img[xy],
     differenceTopEye = maxNonPursed-minNonPursed
 
     cv2.imshow("Faces found", canned)
     cv2.waitKey(0)
-    cv2.imshow("faces found", image)
+    cv2.imshow("faces found", crop_img)
     cv2.waitKey(0)
 
     return differenceTopEye
@@ -364,13 +364,13 @@ def hands():
     return differenceTopEye
 
 #######begin lips  ********************
-differenceTopLipToBottom = normalMouth()
-pursedDifferenceTopLipToBottom = pursedMouth()
-pursedRatio = float(differenceTopLipToBottom)/float(pursedDifferenceTopLipToBottom)
-print pursedRatio
-
-if pursedRatio > 1.2:
-    print "probable discomfort"
+# differenceTopLipToBottom = normalMouth()
+# pursedDifferenceTopLipToBottom = pursedMouth()
+# pursedRatio = float(differenceTopLipToBottom)/float(pursedDifferenceTopLipToBottom)
+# print pursedRatio
+#
+# if pursedRatio > 1.2:
+#     print "probable discomfort"
 
 ######begin eyes ********************
 squintDiff=getSquint()
@@ -381,6 +381,8 @@ print "squint ratio is "
 print squintRatio
 if squintRatio > 1.1:
     print "probable dislike"
+else:
+    print "no discernible eye emotions"
 
 
 #######begin hands  ********************
